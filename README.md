@@ -1,4 +1,4 @@
-# Example data pipeline using python, Postgres and Debezium and Kafka.
+# Example data pipeline using python, Postgres, Debezium and Kafka.
 ___
 
 Whole thing is prepared to be run on docker, just run `docker compose up` (add `-d` to make it work on background).
@@ -15,7 +15,7 @@ Todo List:
   - [x] Add bulk insertion of 500 rows
   - [ ] Add Retry support on insertions
   - [ ] Add scheduling, i.e 5000 rows insert per minute
-  - [ ] Add dirty, wrong, misplaced and empty data with configurable occurence change on data generation
+  - [ ] Add dirty, wrong, misplaced and empty data with configurable occurence chance(%) on data generation
 - [ ] Add, configure, and prepare Kafka
 - [ ] Setting up Debezium CDC
   - [ ] Update Postgres configuration for Debezium usage (enable wal)
