@@ -1,4 +1,4 @@
-# Example data pipeline using python, postgres and debezium.
+# Example data pipeline using python, Postgres and Debezium and Kafka.
 ___
 
 Whole thing is prepared to be run on docker, just run `docker compose up` (add `-d` to make it work on background).
