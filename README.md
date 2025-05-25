@@ -14,7 +14,7 @@ Todo List:
   - [x] Generate data using `Faker` library
   - [x] Add bulk insertion of 500 rows
   - [ ] Add Retry support on insertions
-  - [ ] Add scheduling, i.e 5000 rows insert per minute
+  - [x] Add scheduling, i.e 500 rows insert per minute
   - [ ] Add dirty, wrong, misplaced and empty data with configurable occurence chance(%) on data generation
 - [ ] Add, configure, and prepare Kafka
 - [ ] Setting up Debezium CDC
