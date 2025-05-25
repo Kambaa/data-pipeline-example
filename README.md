@@ -15,7 +15,7 @@ Todo List:
   - [x] Add bulk insertion of 500 rows
   - [ ] Add Retry support on insertions
   - [x] Add scheduling, i.e 500 rows insert per minute
-  - [ ] Add dirty, wrong, misplaced and empty data with configurable occurence chance(%) on data generation
+  - [x] Add dirty, wrong, misplaced and empty data with configurable occurence chance(%) on data generation
 - [ ] Add, configure, and prepare Kafka
 - [ ] Setting up Debezium CDC
   - [ ] Update Postgres configuration for Debezium usage (enable wal)

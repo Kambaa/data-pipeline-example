@@ -19,6 +19,7 @@ services:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
       - DB_CONN_RETRIES=30
       - DB_CONN_DELAY=2
+      - DIRTY_PROBABILITY=0.1
     volumes:
       - .:/app
     command: python app.py
