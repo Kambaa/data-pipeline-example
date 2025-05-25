@@ -10,7 +10,8 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
-  app:
+  datagen:
+    image: datagen
     build: .
     # depends_on:
       # - db
