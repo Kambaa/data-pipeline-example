@@ -10,20 +10,25 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    command: >
+      postgres -c wal_level=logical
+            -c max_replication_slots=10
+            -c max_wal_senders=10
 
-  # datagen:
-  #   image: datagen
-  #   build: .
-  #   # depends_on:
-  #     # - db
-  #   environment:
-  #     - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
-  #     - DB_CONN_RETRIES=30
-  #     - DB_CONN_DELAY=2
-  #     - DIRTY_PROBABILITY=0.1
-  #   volumes:
-  #     - .:/app
-  #   command: python app.py
+
+  datagen:
+    image: datagen
+    build: .
+    # depends_on:
+      # - db
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
+      - DB_CONN_RETRIES=30
+      - DB_CONN_DELAY=2
+      - DIRTY_PROBABILITY=0.1
+    volumes:
+      - .:/app
+    command: python app.py
 
   kafka:
     image: bitnami/kafka:latest
@@ -54,6 +59,27 @@ services:
       - KAFKA_BROKERCONNECT=kafka:9092
     depends_on:
       - kafka
+
+  # https://hub.docker.com/r/debezium/connect
+  connect:
+      image: debezium/connect:3.0.0.Final
+      container_name: connect
+      ports:
+        - "8083:8083"
+      environment:
+        - BOOTSTRAP_SERVERS=kafka:9092
+        - GROUP_ID=1
+        - CONFIG_STORAGE_TOPIC=my_connect_configs
+        - OFFSET_STORAGE_TOPIC=my_connect_offsets
+        - STATUS_STORAGE_TOPIC=my_connect_statuses
+        - KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+        - VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+        - CONNECT_REST_ADVERTISED_HOST_NAME=connect
+        - CONNECT_PLUGIN_PATH=/kafka/connect,/debezium-plugins
+      depends_on:
+        - kafka
+      volumes:
+      - ./debezium-plugins:/debezium-plugins
 
 volumes:
   pgdata:
