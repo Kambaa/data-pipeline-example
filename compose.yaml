@@ -1,4 +1,5 @@
 services:
+
   db:
     image: postgres:15
     environment:
@@ -10,19 +11,49 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
-  datagen:
-    image: datagen
-    build: .
-    # depends_on:
-      # - db
+  # datagen:
+  #   image: datagen
+  #   build: .
+  #   # depends_on:
+  #     # - db
+  #   environment:
+  #     - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
+  #     - DB_CONN_RETRIES=30
+  #     - DB_CONN_DELAY=2
+  #     - DIRTY_PROBABILITY=0.1
+  #   volumes:
+  #     - .:/app
+  #   command: python app.py
+
+  kafka:
+    image: bitnami/kafka:latest
+    container_name: kafka
+    ports:
+      - "9092:9092"
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
-      - DB_CONN_RETRIES=30
-      - DB_CONN_DELAY=2
-      - DIRTY_PROBABILITY=0.1
-    volumes:
-      - .:/app
-    command: python app.py
+      - KAFKA_KRAFT_MODE=true
+      - KAFKA_CFG_NODE_ID=1
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka:9093
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+      - KAFKA_CFG_NUM_PARTITIONS=1
+      - KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CLUSTER_ID=kraft-cluster-1
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop:latest
+    container_name: kafdrop
+    ports:
+      - "9000:9000"
+    environment:
+      - KAFKA_BROKERCONNECT=kafka:9092
+    depends_on:
+      - kafka
 
 volumes:
   pgdata:
